@@ -25,7 +25,7 @@ import com.example.serviceImpl.CustomerServiceImpl;
 
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/customer")
 public class CustomerController {
 
   
