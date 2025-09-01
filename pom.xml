@@ -9,10 +9,9 @@
     <relativePath/>
 </parent>
 	<groupId>com.example</groupId>
-	<artifactId>Customer-Service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Customer-Service</name>
-	<description>Demo project for Spring Boot</description>
+	<artifactId>customer-service</artifactId>
+	<name>customer-service</name>
+	<description>Login Service with JPA, Security, and Eureka</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -44,6 +43,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+	
+	<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
@@ -111,6 +116,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>customerService</finalName>
 	</build>
 
 </project>
