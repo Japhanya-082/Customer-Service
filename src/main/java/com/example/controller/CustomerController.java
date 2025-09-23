@@ -1,11 +1,10 @@
 package com.example.controller;
 
-import java.util.List;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.DTO.CustomerDto;
+
 import com.example.DTO.RestAPIResponse;
 import com.example.entity.Customer;
-import com.example.repository.CustomerRepository;
 import com.example.serviceImpl.CustomerServiceImpl;
 
 
@@ -56,9 +54,9 @@ public class CustomerController {
 	}
 	
 	@GetMapping("/{customerId}")
-	public ResponseEntity<RestAPIResponse> getById(@PathVariable Long customerId,@RequestBody Customer customer) {
+	public ResponseEntity<RestAPIResponse> getById(@PathVariable Long customerId) {
 		try {
-	        RestAPIResponse response = new RestAPIResponse("success","User Data getting by Id Successfully", customerServiceImpl.getById(customerId, customer) );
+	        RestAPIResponse response = new RestAPIResponse("success","User Data getting by Id Successfully", customerServiceImpl.getById(customerId) );
 	        return new ResponseEntity<RestAPIResponse>(response, HttpStatus.OK);
 	    } catch (Exception e) {
 	        RestAPIResponse response = new RestAPIResponse("error", "User is not found");

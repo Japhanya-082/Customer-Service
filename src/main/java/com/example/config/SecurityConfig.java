@@ -23,7 +23,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**","customer/**").permitAll()
+                .requestMatchers("/auth/**","customer/**","vendor/**").permitAll()
                 .anyRequest().authenticated()
             );
         return http.build();
@@ -33,7 +33,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // Angular frontend
+        config.setAllowedOrigins(Arrays.asList("http://localhost:4200" , "http://76.234.146.243:1717")); // Angular frontend
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setMaxAge(3600L);

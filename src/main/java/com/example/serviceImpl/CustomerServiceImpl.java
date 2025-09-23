@@ -28,7 +28,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer getById(Long customerId, Customer customer) {
+	public Customer getById(Long customerId) {
 		return customerRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found with id " + customerId));
 	}
 
@@ -56,18 +56,18 @@ public class CustomerServiceImpl implements CustomerService {
 	customerRepository.deleteById(CustmoerId);
 	}
 
-	@Override
-	public CustomerDto toDto(Customer customer) {
-		return CustomerDto.builder()
-                .customerId(customer.getCustomerId())
-                .firstName(customer.getFirstName())
-                .lastName(customer.getLastName())
-                .email(customer.getEmail())
-                .moblieNumber(customer.getMoblieNumber())
-                .billingAddress(customer.getBillingAddress())
-                .shippingAddress(customer.getShippingAddress())
-                .status(customer.getStatus())
-                .build();
-    }
+//	@Override
+//	public CustomerDto toDto(Customer customer) {
+//		return CustomerDto.builder()
+//                .customerId(customer.getCustomerId())
+//                .firstName(customer.getFirstName())
+//                .lastName(customer.getLastName())
+//                .email(customer.getEmail())
+//                .moblieNumber(customer.getMoblieNumber())
+//                .billingAddress(customer.getBillingAddress())
+//                .shippingAddress(customer.getShippingAddress())
+//                .status(customer.getStatus())
+//                .build();
+//    }
 
 }

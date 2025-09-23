@@ -6,16 +6,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "customer-info")
+@Table(name = "customer_info")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
 public class Customer {
 	
 	@Id
