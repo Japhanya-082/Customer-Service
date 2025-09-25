@@ -35,6 +35,15 @@ public class VendorController {
 			return new ResponseEntity<>(new RestAPIResponse("error","registerd failed"),HttpStatus.OK);
 	}
 }
+	@GetMapping("/{vendorId}")
+	public ResponseEntity<RestAPIResponse> getById(@PathVariable Long vendorId){
+		try {
+			return new ResponseEntity<>(new RestAPIResponse("Success", "Getting the Vendor Data successfully By ID", vendorServiceImpl.getById(vendorId)), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(new RestAPIResponse("Error", "Vendor is not found or not exist",null),HttpStatus.OK);
+		}
+	}
+	
 	
     @GetMapping("getall")
 	public ResponseEntity<RestAPIResponse> getAllVendors(){

@@ -9,6 +9,7 @@ import com.example.entity.Vendor;
 public interface VendorService {
 
 	public Vendor createVendor(Vendor vendor);
+	public Vendor getById(Long vendorId);
 	public List<Vendor> getAll();
 	public Vendor updateVendor(Long vendorId, Vendor vendor);
 	public void deleteVendor(Long vendorId);
