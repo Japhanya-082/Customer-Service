@@ -20,40 +20,40 @@ import com.example.DTO.RestAPIResponse;
 import com.example.entity.Vendor;
 import com.example.serviceImpl.VendorServiceImpl;
 
-@RestController
-@RequestMapping("/vendor")
-public class VendorController {
-	
-	@Autowired 
-	private VendorServiceImpl vendorServiceImpl;
-	
-	@PostMapping("/save")
-	public ResponseEntity<RestAPIResponse> saveVendor(@RequestBody Vendor vendor){
-		try {
-			 return new ResponseEntity<>(new RestAPIResponse("success","Registered Successfully",vendorServiceImpl.createVendor(vendor)),HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(new RestAPIResponse("error","registerd failed"),HttpStatus.OK);
-	}
-}
-	@GetMapping("/{vendorId}")
-	public ResponseEntity<RestAPIResponse> getById(@PathVariable Long vendorId){
-		try {
-			return new ResponseEntity<>(new RestAPIResponse("Success", "Getting the Vendor Data successfully By ID", vendorServiceImpl.getById(vendorId)), HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(new RestAPIResponse("Error", "Vendor is not found or not exist",null),HttpStatus.OK);
+	@RestController
+	@RequestMapping("/vendor")
+	public class VendorController {
+		
+		@Autowired 
+		private VendorServiceImpl vendorServiceImpl;
+		
+		@PostMapping("/save")
+		public ResponseEntity<RestAPIResponse> saveVendor(@RequestBody Vendor vendor){
+			try {
+				 return new ResponseEntity<>(new RestAPIResponse("success","Registered Successfully",vendorServiceImpl.createVendor(vendor)),HttpStatus.OK);
+			} catch (Exception e) {
+				return new ResponseEntity<>(new RestAPIResponse("error","registerd failed"),HttpStatus.OK);
 		}
 	}
-	
-	
-    @GetMapping("getall")
-	public ResponseEntity<RestAPIResponse> getAllVendors(){
-		try {
-			 return new ResponseEntity<>(new RestAPIResponse("success","All Vendors Data Successfully",vendorServiceImpl.getAll()),HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(new RestAPIResponse("error","Getting Data failed"),HttpStatus.OK);
-	}
-    }
+		@GetMapping("/{vendorId}")
+		public ResponseEntity<RestAPIResponse> getById(@PathVariable Long vendorId){
+			try {
+				return new ResponseEntity<>(new RestAPIResponse("Success", "Getting the Vendor Data successfully By ID", vendorServiceImpl.getById(vendorId)), HttpStatus.OK);
+			} catch (Exception e) {
+				return new ResponseEntity<>(new RestAPIResponse("Error", "Vendor is not found or not exist",null),HttpStatus.OK);
+			}
+		}
 		
+		
+	    @GetMapping("/getData")
+		public ResponseEntity<RestAPIResponse> getAllVendors(){
+			try {
+				 return new ResponseEntity<>(new RestAPIResponse("success","All Vendors Data Successfully",vendorServiceImpl.getAll()),HttpStatus.OK);
+			} catch (Exception e) {
+				return new ResponseEntity<>(new RestAPIResponse("error","Getting Data failed"),HttpStatus.OK);
+		}
+	    }
+			
     @GetMapping("/search")
     public ResponseEntity<RestAPIResponse> searchVendors(
             @RequestParam(required = false, defaultValue = "") String keyword,
