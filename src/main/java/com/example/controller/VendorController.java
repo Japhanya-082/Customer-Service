@@ -1,5 +1,7 @@
 package com.example.controller;
 
+
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +46,19 @@ public class VendorController {
 		}
 	}
 	
+	@GetMapping("/domain/{domain}")
+	public ResponseEntity<RestAPIResponse> getByCompanyDomain(@PathVariable String domain){
+		
+		try {
+			List<Vendor> vendors = vendorServiceImpl.getVendorByDomain(domain);
+			return new ResponseEntity<>(new RestAPIResponse("Success", "Vendor found for domain", vendors), HttpStatus.OK);
+		} catch(Exception e) {
+			return new ResponseEntity<>(new RestAPIResponse("error", e.getMessage()), HttpStatus.OK);
+		}
+		
+	}
 	
-    @GetMapping("/ getall")
+    @GetMapping("/getall")
 	public ResponseEntity<RestAPIResponse> getAllVendors(){
 		try {
 			 return new ResponseEntity<>(new RestAPIResponse("success","All Vendors Data Successfully",vendorServiceImpl.getAll()),HttpStatus.OK);
@@ -54,21 +67,24 @@ public class VendorController {
 	}
     }
 		
-    @GetMapping("/search")
-    public ResponseEntity<RestAPIResponse> searchVendors(
+    @GetMapping("/searchAndSort")
+    public ResponseEntity<RestAPIResponse> searchAndSortVendors( 
             @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "vendorId") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDir) {
         try {
-            Page<Vendor> result = vendorServiceImpl.searchVendors(keyword, page, size);
-            return new ResponseEntity<>(new RestAPIResponse("Success", "Vendors Retrieved Successfully (Search + Pagination)",result),HttpStatus.OK);
+            Page<Vendor> result = vendorServiceImpl.searchAndSortVendors(keyword, page, size, sortField, sortDir);
+            return new ResponseEntity<>(
+                    new RestAPIResponse("Success", "Vendors Retrieved Successfully (Search + Sort + Pagination)", result),
+                    HttpStatus.OK); 
         } catch (Exception e) {
             return new ResponseEntity<>(
-                    new RestAPIResponse("Error", "Failed to search vendors"),
+                    new RestAPIResponse("Error", "Failed to search and sort vendors: " + e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     
 		@PutMapping("/{vendorId}")
 		public ResponseEntity<RestAPIResponse> updateVendor(@PathVariable Long vendorId, @RequestBody Vendor vendor){

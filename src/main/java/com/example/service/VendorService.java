@@ -14,5 +14,5 @@ public interface VendorService {
 	public Vendor updateVendor(Long vendorId, Vendor vendor);
 	public void deleteVendor(Long vendorId);
 	
-	public Page<Vendor> searchVendors(String keyword, int page, int size);
+	public Page<Vendor> searchAndSortVendors(String keyword, int page, int size, String sortField, String sortDir);
 }

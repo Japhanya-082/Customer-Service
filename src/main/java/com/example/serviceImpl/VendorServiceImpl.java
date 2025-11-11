@@ -22,8 +22,23 @@ public class VendorServiceImpl implements VendorService{
                
                 @Override
                 public Vendor createVendor(Vendor vendor) {
-                    return vendorRepository.save(vendor); // returns saved entity with generated ID
-                }           
+                    if (vendor.getVendorId()== null) {
+                        // Find the smallest missing vendorId
+                        List<Long> ids = vendorRepository.findAll()
+                                                         .stream()
+                                                         .map(Vendor::getVendorId)
+                                                         .sorted()
+                                                         .toList();
+
+                        long nextId = 1;
+                        for (Long id : ids) {
+                            if (id != nextId) break;
+                            nextId++;
+                        }
+                        vendor.setVendorId(nextId);
+                    }
+                    return vendorRepository.save(vendor);
+                }        
               
 
                 @Override
@@ -38,7 +53,7 @@ public class VendorServiceImpl implements VendorService{
                         existing.setVendorAccountNumber(vendor.getVendorAccountNumber());
                         existing.setPhoneNumber(vendor.getPhoneNumber());
                         existing.setEmail(vendor.getEmail());
-                        existing.setGstNumber(vendor.getGstNumber());
+                        existing.setEinNumber(vendor.getEinNumber());
 
                         if (vendor.getVendorAddress() != null) {
                             existing.setVendorAddress(vendor.getVendorAddress());
@@ -55,19 +70,31 @@ public class VendorServiceImpl implements VendorService{
 
 
                 @Override
-                public Page<Vendor> searchVendors(String keyword, int page, int size) {
-                    Pageable pageable = PageRequest.of(page, size, Sort.by("vendorId").ascending());
-                    
+                public Page<Vendor> searchAndSortVendors(String keyword, int page, int size, String sortField, String sortDir) {
+                    Sort sort = sortDir.equalsIgnoreCase("asc") ?
+                            Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+
+                    Pageable pageable = PageRequest.of(page, size, sort);
+
                     if (keyword == null || keyword.isEmpty()) {
-                        // No keyword → return all vendors paginated
+                        // No keyword → just return all with pagination and sorting
                         return vendorRepository.findAll(pageable);
                     } else {
-                        // Search with keyword
+                        // Keyword present → apply search query with pageable (which already includes sort)
                         return vendorRepository.searchVendors(keyword, pageable);
                     }
                 }
 
 
+                public List<Vendor> getVendorByDomain(String domain) {
+                    // domain could be like "tcs.com"
+                	List<Vendor> vendors = vendorRepository.findByEmailEndingWith(domain);
+                    if (vendors.isEmpty()) {
+                    	throw new RuntimeException("No vendors found for domain: " + domain);
+					}
+                    return vendors;
+                }
+                
 				@Override
 				public Vendor getById(Long vendorId) {
 					

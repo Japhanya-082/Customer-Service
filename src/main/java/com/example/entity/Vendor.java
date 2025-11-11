@@ -15,13 +15,12 @@ import lombok.NoArgsConstructor;
 public class Vendor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long vendorId;
+    private Long vendorId;
 
     private String vendorName;
     private String vendorAccountNumber;
     private String email;
-    private String gstNumber;
+    private String einNumber;
     private Long phoneNumber;
     
     @Embedded
