@@ -3,6 +3,7 @@ package com.example.controller;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.DTO.RestAPIResponse;
+import com.example.DTO.VendorAddressDTO;
+import com.example.DTO.VendorDTO;
 import com.example.entity.Vendor;
+import com.example.repository.VendorRepository;
 import com.example.serviceImpl.VendorServiceImpl;
 
 @RestController
@@ -29,14 +33,20 @@ public class VendorController {
 	@Autowired 
 	private VendorServiceImpl vendorServiceImpl;
 	
+	@Autowired
+	private VendorRepository vendorRepository;
+	
 	@PostMapping("/save")
-	public ResponseEntity<RestAPIResponse> saveVendor(@RequestBody Vendor vendor){
-		try {
-			 return new ResponseEntity<>(new RestAPIResponse("success","Registered Successfully",vendorServiceImpl.createVendor(vendor)),HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(new RestAPIResponse("error","registerd failed"),HttpStatus.OK);
-	}
-}
+    public ResponseEntity<RestAPIResponse> saveVendor(@RequestBody Vendor vendor) {
+
+        Vendor savedVendor = vendorServiceImpl.createVendor(vendor);
+
+        return new ResponseEntity<>(
+                new RestAPIResponse("success", "Registered Successfully", savedVendor),
+                HttpStatus.OK
+        );
+    }
+	
 	@GetMapping("/{vendorId}")
 	public ResponseEntity<RestAPIResponse> getById(@PathVariable Long vendorId){
 		try {
@@ -58,6 +68,31 @@ public class VendorController {
 		
 	}
 	
+	@GetMapping("/by-name")
+	public ResponseEntity<List<VendorDTO>> searchVendors(@RequestParam String name) {
+	    List<Vendor> vendors = vendorServiceImpl.searchByName(name);
+
+	    List<VendorDTO> response = vendors.stream().map(vendor -> {
+	        VendorAddressDTO addr = new VendorAddressDTO(
+	            vendor.getVendorAddress().getStreet(),
+	            vendor.getVendorAddress().getSuite(),
+	            vendor.getVendorAddress().getCity(),
+	            vendor.getVendorAddress().getState(),
+	            vendor.getVendorAddress().getZipCode()
+	        );
+
+	        return new VendorDTO(
+	            vendor.getVendorName(),
+	            vendor.getEmail(),
+	            vendor.getPhoneNumber(),
+	            addr
+	        );
+	    }).collect(Collectors.toList());
+
+	    return ResponseEntity.ok(response);
+	}
+
+
     @GetMapping("/getall")
 	public ResponseEntity<RestAPIResponse> getAllVendors(){
 		try {
@@ -68,24 +103,29 @@ public class VendorController {
     }
 		
     @GetMapping("/searchAndSort")
-    public ResponseEntity<RestAPIResponse> searchAndSortVendors( 
+    public ResponseEntity<RestAPIResponse> searchAndSortVendors(
             @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "vendorId") String sortField,
             @RequestParam(defaultValue = "asc") String sortDir) {
+
         try {
-            Page<Vendor> result = vendorServiceImpl.searchAndSortVendors(keyword, page, size, sortField, sortDir);
+            Page<Vendor> result = vendorServiceImpl.getVendors(page, size, sortField, sortDir, keyword);
+
             return new ResponseEntity<>(
-                    new RestAPIResponse("Success", "Vendors Retrieved Successfully (Search + Sort + Pagination)", result),
-                    HttpStatus.OK); 
+                    new RestAPIResponse("Success",
+                            "Vendors Retrieved Successfully (Search + Sort + Pagination)",
+                            result),
+                    HttpStatus.OK);
+
         } catch (Exception e) {
             return new ResponseEntity<>(
                     new RestAPIResponse("Error", "Failed to search and sort vendors: " + e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
 		@PutMapping("/{vendorId}")
 		public ResponseEntity<RestAPIResponse> updateVendor(@PathVariable Long vendorId, @RequestBody Vendor vendor){
 			try {
